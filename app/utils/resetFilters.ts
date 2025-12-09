@@ -1,12 +1,6 @@
 import type React from "react";
 import { CategoryKey, AgeFilter } from "../types";
 
-type AgeFilter = {
-  from: number | null;
-  to: number | null;
-};
-
-
 export const DEFAULT_CATEGORY_FILTER: CategoryKey[] = [
   "learning",
   "work",

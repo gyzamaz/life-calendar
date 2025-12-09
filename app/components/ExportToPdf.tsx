@@ -1,25 +1,25 @@
 "use client";
 
-import { useState, type RefObject } from "react";
+import { useState, RefObject } from "react";
 
 interface ExportToPdfProps {
   t: Record<string, string>;
-  targetRef: RefObject<HTMLElement>;
+  calendarRef: RefObject<HTMLElement | null>;
   filename?: string;
 }
 
-export function ExportToPdf({ t, targetRef, filename = "kalendarz-zycia.pdf" }: ExportToPdfProps) {
+export function ExportToPdf({ t, calendarRef, filename = "kalendarz-zycia.pdf" }: ExportToPdfProps) {
   const [loading, setLoading] = useState(false);
 
   async function handleExportPdf() {
-    if (!targetRef.current || loading) return;
+    if (!calendarRef.current || loading) return;
 
     setLoading(true);
     try {
       const html2canvas = (await import("html2canvas")).default;
       const { jsPDF } = await import("jspdf");
 
-      const element = targetRef.current;
+      const element = calendarRef.current;
 
       const canvas = await html2canvas(element, {
         scale: 2,

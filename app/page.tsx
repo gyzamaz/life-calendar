@@ -33,6 +33,8 @@ import {
   CalendarData,
   MilestoneMap,
   AgeFilter,
+  LifeEventType,
+  LifeCellId,
 } from "./types";
 
 import {
@@ -41,6 +43,7 @@ import {
   Category,
   LifeEvent,
   CurrentPosition,
+  Milestone,
  } from "./interfaces";
 
 const CATEGORIES: Category[] = [
@@ -185,11 +188,6 @@ function handleSelectCell(year: number, month: number) {
   scrollToNotes();
 }
 
-  const yearsArray = useMemo(
-    () => Array.from({ length: settings.maxAge }, (_, i) => i + 1),
-    [settings.maxAge]
-  );
-
   const totals = useMemo(() => {
     const result: Record<CategoryKey, number> = {
       none: 0,
@@ -276,31 +274,22 @@ function handleSelectCell(year: number, month: number) {
     }
   }
 
+function makeCellId(year: number, month: number): LifeCellId {
+  return `${year}-${month}` as LifeCellId;
+}
 
+  
 
-  const activeCategoryLabel = useMemo(() => {
-    switch (activeCategory) {
-      case "learning":
-        return t.category_learning;
-      case "work":
-        return t.category_work;
-      case "retirement":
-        return t.category_retirement;
-      case "other":
-        return t.category_other;
-      case "none":
-      default:
-        return t.category_none;
-    }
-  }, [activeCategory, t]);
+  const selectedKey: LifeCellId | null = selectedCell
+  ? makeCellId(selectedCell.year, selectedCell.month)
+  : null;
 
-  const selectedKey = selectedCell
-    ? `${selectedCell.year}-${selectedCell.month}`
+const selectedMilestone =
+  selectedKey && milestones[selectedKey]
+    ? milestones[selectedKey]
     : null;
-  const selectedMilestone =
-    selectedKey && milestones[selectedKey]
-      ? milestones[selectedKey]
-      : null;
+
+
 
   function handleSaveMilestone(
     title: string,
@@ -308,28 +297,17 @@ function handleSelectCell(year: number, month: number) {
     important: boolean
   ) {
     if (!selectedCell) return;
-    const id = `${selectedCell.year}-${selectedCell.month}`;
-    const cleanTitle = title.trim();
-    const cleanDesc = description.trim();
-
+    const id = makeCellId(selectedCell.year, selectedCell.month);
     setMilestones((prev) => {
       const updated: MilestoneMap = { ...prev };
-      if (!cleanTitle && !cleanDesc && !important) {
-        delete updated[id];
-      } else {
-        updated[id] = {
-          title: cleanTitle,
-          description: cleanDesc,
-          important,
-        };
-      }
+      delete updated[id];
       return updated;
     });
   }
 
   function handleDeleteMilestone() {
     if (!selectedCell) return;
-    const id = `${selectedCell.year}-${selectedCell.month}`;
+    const id = makeCellId(selectedCell.year, selectedCell.month);
     setMilestones((prev) => {
       const updated: MilestoneMap = { ...prev };
       delete updated[id];

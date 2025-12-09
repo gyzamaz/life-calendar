@@ -5,10 +5,7 @@ import {
     Settings,
 } from "../interfaces";
 
-
 export type CategoryKey = "none" | "learning" | "work" | "retirement" | "other";
-
-export type MilestoneMap = Record<string, Milestone>;
 
 export type LifeEventType =
   | "work"
@@ -18,10 +15,14 @@ export type LifeEventType =
   | "health"
   | "loss"
   | "move"
-    | "other";
+  | "other";
   
-  export type CalendarData = Record<string, CategoryKey>;
+export type CalendarData = Record<string, CategoryKey>;
 
-  export type Language = "pl" | "en";
+export type Language = "pl" | "en";
 
-  export type AgeFilter = { from: number | null; to: number | null };
+export type AgeFilter = { from: number | null; to: number | null };
+
+export type LifeCellId = `${number}-${number}`;
+
+export type MilestoneMap = Record<LifeCellId, Milestone>;

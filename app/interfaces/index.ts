@@ -6,7 +6,6 @@ export interface Milestone {
   important?: boolean;
 }
 
-
 export interface LifeEvent {
   id: string;
   title: string;

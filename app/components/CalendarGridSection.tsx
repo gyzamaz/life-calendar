@@ -18,15 +18,22 @@ import {
   DEFAULT_AGE_FILTER,
 } from "../utils/resetFilters";
 
-import { CategoryKey } from "../types";
-import { Settings } from "../interfaces";
+import {
+  CategoryKey,
+  MilestoneMap,
+  AgeFilter,
+  LifeCellId
+} from "../types";
+
+import {
+  Settings,
+  Category,
+   LifeEvent,
+  CurrentPosition,
+  Milestone,
+ } from "../interfaces";
 
 import { LegendItem } from "./LegendItem";
-
-interface Category {
-  key: CategoryKey;
-  color: string;
-}
 
 const CATEGORIES: Category[] = [
   { key: "none", color: "#e5e7eb" },
@@ -35,8 +42,6 @@ const CATEGORIES: Category[] = [
   { key: "retirement", color: "#a1a1aa" },
   { key: "other", color: "#facc15" },
 ];
-
-
 
 type CalendarData = Record<string, CategoryKey>;
 
@@ -247,6 +252,10 @@ export function CalendarGridSection({
     }
   }, [activeCategory, t]);
 
+  function makeCellId(year: number, month: number): LifeCellId {
+  return `${year}-${month}` as LifeCellId;
+}
+
   return (
     <div      ref={calendarRef}    >
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -410,11 +419,11 @@ export function CalendarGridSection({
             {yearsArray.map((year) => {
               const yearImportantMilestones = Object.entries(milestones).filter(
                 ([id, ms]) => {
-                  const [y] = id.split("-");
+                  const [y] = (id as LifeCellId).split("-");
                   return parseInt(y, 10) === year && ms.important;
                 }
               );
-
+              
               const yearHasImportant = yearImportantMilestones.length > 0;
               const yearTooltip =
                 yearImportantMilestones
@@ -446,7 +455,7 @@ export function CalendarGridSection({
                   <div className="grid grid-cols-12 gap-[3px] flex-1">
                     {Array.from({ length: 12 }, (_, i) => i + 1).map(
                       (month) => {
-                        const id = `${year}-${month}`;
+                        const id = makeCellId(year, month);
                         const key = calendar[id] ?? "none";
                         const category =
                           CATEGORIES.find((c) => c.key === key) ??

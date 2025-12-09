@@ -1,6 +1,5 @@
 import { Language } from "./types";
 
-
 export const months = [
     { value: 1, pl: "Styczeń", en: "January" },
     { value: 2, pl: "Luty", en: "February" },
